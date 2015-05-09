@@ -12,14 +12,15 @@ var webrootPath = '.';
 var distPath = webrootPath + '/lib';
 var cssPath = webrootPath + '/lib';
 var jsPath = webrootPath + '/src/';
+var jsWatch = jsPath + '/*.js';
 var sassPath = webrootPath + '/src/scss';
 var sassWatch = sassPath + '/*.scss';
 
 var lrPort = 35729;
 
 var lrWatchPaths = [
-    cssPath + '/*.css',
-    jsPath + '/*.js',
+    distPath + '/*.css',
+    distPath + '/*.js',
 ];
 
 function notifyLiveReload(event) {
@@ -32,9 +33,11 @@ function notifyLiveReload(event) {
     });
 }
 
-gulp.task('live', ['livecompass', 'livereload']);
+gulp.task('live', ['live-compass', 'live-uglify', 'live-reload']);
 
-gulp.task('livereload', function () {
+
+// Live reload
+gulp.task('live-reload', function () {
     tinylr = require('tiny-lr')();
     tinylr.listen(lrPort);
 
@@ -43,7 +46,8 @@ gulp.task('livereload', function () {
     }
 });
 
-gulp.task('livecompass', function () {
+// Compass
+gulp.task('live-compass', function () {
     gulp.watch(sassWatch, ['compass']);
 });
 
@@ -59,11 +63,17 @@ gulp.task('compass', function () {
         .pipe(gulp.dest(cssPath));
 });
 
+// Uglify
 gulp.task('uglify', function () {
-    return gulp.src(jsPath + '/*.js')
+    return gulp.src(jsWatch)
         .pipe(uglify())
         .pipe(rename('page-slider.min.js'))
         .pipe(gulp.dest(distPath));
 });
+
+gulp.task('live-uglify', function () {
+    gulp.watch(jsWatch, ['uglify']);
+});
+
 
 })();
