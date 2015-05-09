@@ -1,11 +1,15 @@
 (function () {
 'use strict';
 
-var gulp  = require('gulp');
+var gulp = require('gulp');
 var plumber = require('gulp-plumber');
+var compass = require('gulp-compass');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
 var tinylr;
 
 var webrootPath = '.';
+var distPath = webrootPath + '/lib';
 var cssPath = webrootPath + '/lib';
 var jsPath = webrootPath + '/src/';
 var sassPath = webrootPath + '/src/scss';
@@ -45,8 +49,6 @@ gulp.task('livecompass', function () {
 
 gulp.task('compass', function () {
 
-    var compass = require('gulp-compass');
-
     gulp.src(sassWatch)
         .pipe(plumber())
         .pipe(compass({
@@ -55,6 +57,13 @@ gulp.task('compass', function () {
             sass: sassPath,
         }))
         .pipe(gulp.dest(cssPath));
+});
+
+gulp.task('uglify', function () {
+    return gulp.src(jsPath + '/*.js')
+        .pipe(uglify())
+        .pipe(rename('page-slider.min.js'))
+        .pipe(gulp.dest(distPath));
 });
 
 })();
