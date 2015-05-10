@@ -159,6 +159,6 @@ slider.slidePage($page, {
     },
 });
 
+```
 You can look at a working example in the `example` folder.
 
-```
