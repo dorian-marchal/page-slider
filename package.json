@@ -22,7 +22,10 @@
     "url": "https://github.com/dorian-marchal/page-slider"
   },
   "keywords": [
-    "pageslider"
+    "pageslider",
+    "page",
+    "slide",
+    "slider"
   ],
   "author": "Dorian MARCHAL",
   "license": "MIT",
