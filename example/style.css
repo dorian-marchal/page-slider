@@ -5,6 +5,15 @@
     font-family: sans-serif;
 }
 
+/* Fixed elements fix */
+[data-fixed="fixed"] {
+    position: fixed !important;
+}
+
+[data-fixed="absolute"] {
+    position: absolute !important;
+}
+
 body {
     background-color: #DDD;
     text-align: center;

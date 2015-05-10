@@ -11,9 +11,29 @@ $(function () {
     // Create a PageSlider ('body' is the container)
     var slider = new PageSlider($('body'));
 
+    // Slide in the page associated to the current hash
     var slideCurrentPage = function () {
-        slider.slidePage(pages[location.hash]);
+        slider.slidePage(pages[location.hash], {
+            // Fix for the fixed elements (see the README for more informations)
+            beforeTransition: function () {
+                $('[data-fixed]').attr('data-fixed', 'absolute');
+            },
+            afterTransition: function () {
+                $('[data-fixed]').attr('data-fixed', 'fixed');
+            },
+        });
     };
+
+    // When hash change, we load the related page
+    $(window).on('hashchange', function() {
+        slideCurrentPage();
+    });
+
+    // Back button event binding
+    $(document).on('click', '.back', function (event) {
+        event.preventDefault();
+        history.back();
+    });
 
     // Load the first page
     if (!location.hash) {
@@ -22,15 +42,4 @@ $(function () {
     else {
         slideCurrentPage();
     }
-
-    // Load page when changing history
-    $(window).on('hashchange', function() {
-        slideCurrentPage();
-    });
-
-    // Back button
-    $(document).on('click', '.back', function (event) {
-        event.preventDefault();
-        history.back();
-    });
 });
