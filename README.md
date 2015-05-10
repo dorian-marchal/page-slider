@@ -83,3 +83,41 @@ Same methods as `slidePageFrom` but determine automatically the slide origin bas
 
 It is possible to call this function just before calling `slidePage` to know which behaviour the newt transition will have.
 This function is based on the current hash and return `'left'`, `'right'` or `null` (see `slidePage` for more infos).
+
+## Fixed elements on some devices
+
+In the native browser of some android devices, the fixed elements don't follow their parent during css transitions.
+This can be a problem if you develop a mobile app based on webviews (a Phonegap based app, for example).
+
+To avoid this problem, you may want to set your fixed elements to absolute positioning before the slide and revert them back to fixed positioning after the transition.
+
+You can do that with the help of the transition hooks :
+
+```css
+[data-fixed="fixed"] {
+    position: fixed !important;
+}
+
+[data-fixed="absolute"] {
+    position: absolute !important;
+}
+```
+
+```html
+<!-- in your html, on a fixed element -->
+<div data-fixed='absolute' class="my-fixed-div" ></div>
+
+```
+
+```js
+// When you slide your pages
+slider.slidePage($page, {
+    beforeTransition: function () {
+        $('[data-fixed]').attr('data-fixed', 'absolute');
+    },
+    afterTransition: function () {
+        $('[data-fixed]').attr('data-fixed', 'fixed');
+    },
+});
+
+```

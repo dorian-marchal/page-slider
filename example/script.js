@@ -12,7 +12,15 @@ $(function () {
     var slider = new PageSlider($('body'));
 
     var slideCurrentPage = function () {
-        slider.slidePage(pages[location.hash]);
+        slider.slidePage(pages[location.hash], {
+            // Fix for the fixed elements (see the README for more informations)
+            beforeTransition: function () {
+                $('[data-fixed]').attr('data-fixed', 'absolute');
+            },
+            afterTransition: function () {
+                $('[data-fixed]').attr('data-fixed', 'fixed');
+            },
+        });
     };
 
     // Load the first page
