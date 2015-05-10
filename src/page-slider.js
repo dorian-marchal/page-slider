@@ -5,10 +5,18 @@
  * Based on : https://github.com/ccoenraets/directory-backbone-topcoat-require
  *
  */
-define([
-    'jquery',
-], function ($) {
-
+ (function (root, factory) {
+     if (typeof define === 'function' && define.amd) {
+         // AMD. Register as an anonymous module.
+         define(['jquery'], factory);
+     } else if (typeof exports === 'object') {
+         // Node.
+         module.exports = factory(require('jquery'));
+     } else {
+         // Browser globals (root is window)
+         root.PageSlider = factory(root.jQuery);
+     }
+ }(this, function ($) {
     'use strict';
 
     return function PageSlider($container) {
@@ -164,6 +172,7 @@ define([
          */
         this.slidePageFrom = function ($newPage, from, options) {
 
+            options = options || {};
             options.beforeTransition = options.beforeTransition || $.noop;
             options.afterTransition = options.afterTransition || $.noop;
 
@@ -234,5 +243,4 @@ define([
         };
 
     };
-
-});
+}));
