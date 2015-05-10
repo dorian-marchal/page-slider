@@ -33,6 +33,8 @@ function notifyLiveReload(event) {
     });
 }
 
+gulp.task('default', ['live']);
+
 gulp.task('live', ['live-compass', 'live-uglify', 'live-reload']);
 
 
