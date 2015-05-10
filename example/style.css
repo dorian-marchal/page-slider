@@ -42,6 +42,18 @@ li {
     list-style-type: none;
 }
 
+li a {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+li a:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 .page-2 header,
 .page-2 footer {
     background-color: #582525;

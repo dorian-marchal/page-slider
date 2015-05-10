@@ -8,24 +8,26 @@
     <body>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="../src/page-slider.js" charset="utf-8"></script>
         <script src="script.js" charset="utf-8"></script>
     </body>
 </html>
 
 <!-- Page templates, embedded in the file for the sake of simplicity -->
 
-<script id="page-1" type="text/template">
+<script id="page-template-1" type="text/template">
     <div class="page-1">
         <header>
             Fixed Header : Page 1
         </header>
         <section>
+            <h2>Scrollable content</h2>
             <ul>
-                <li>Scrollable content</li>
-                <li>Scrollable content</li>
-                <li>Scrollable content</li>
-                <li>Scrollable content</li>
-                <li>Scrollable content</li>
+                <li><a href="#page-2">Go to page 2</a></li>
+                <li><a href="#page-3">Go to page 3</a></li>
+                <li><a href="#page-2">Go to page 2</a></li>
+                <li><a href="#page-3">Go to page 3</a></li>
+                <li><a href="#page-2">Go to page 2</a></li>
             </ul>
         </section>
         <footer>
@@ -34,18 +36,18 @@
     </div>
 </script>
 
-<script id="page-2" type="text/template">
+<script id="page-template-2" type="text/template">
     <div class="page-2">
         <header>
             Fixed Header : Page 2
         </header>
         <section>
+            <h2>Other content</h2>
             <ul>
-                <li>Other content</li>
-                <li>Other content</li>
-                <li>Other content</li>
-                <li>Other content</li>
-                <li>Other content</li>
+                <li><a href="#page-3">Go to page 3</a></li>
+                <li><a href="#page-1">Back to page 1</a></li>
+                <li><a href="#page-3">Go to page 3</a></li>
+                <li><a href="#page-1">Back to page 1</a></li>
             </ul>
         </section>
         <footer>
@@ -54,15 +56,16 @@
     </div>
 </script>
 
-<script id="page-3" type="text/template">
+<script id="page-template-3" type="text/template">
     <div class="page-3">
         <header>
             Fixed Header : Page 3
         </header>
         <section>
+            <h2>Small content</h2>
             <ul>
-                <li>Small content</li>
-                <li>Small content</li>
+                <li><a href="#page-2">Back to page 2</a></li>
+                <li><a href="#page-1">Go to page 1</a></li>
             </ul>
         </section>
         <footer>
