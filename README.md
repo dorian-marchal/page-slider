@@ -104,7 +104,26 @@ Same methods as `slidePageFrom` but determine automatically the slide origin bas
 It is possible to call this function just before calling `slidePage` to know which behaviour the newt transition will have.
 This function is based on the current hash and return `'left'`, `'right'` or `null` (see `slidePage` for more infos).
 
-## Fixed elements on some devices
+## Some usual issues
+
+### Scrollable pages
+
+As stated above, PageSlider add some required style to your container (`height: 100%` and `overflow: hidden`).
+This style ensures that your fixed elements look nice during slides, but also prevents your page from being scrollable.
+
+To circumvent this issue, you can add this CSS to your page immediate child to restore their scrolling behaviour :
+
+```css
+{
+    height: 100%;
+    overflow-y: scroll;
+}
+```
+
+You can look at a working example in the `example` folder.
+
+
+### Fixed elements on some devices
 
 In the native browser of some android devices, the fixed elements don't follow their parent during css transitions.
 This can be a problem if you develop a mobile app based on webviews (a Phonegap based app, for example).
@@ -139,5 +158,7 @@ slider.slidePage($page, {
         $('[data-fixed]').attr('data-fixed', 'fixed');
     },
 });
+
+You can look at a working example in the `example` folder.
 
 ```
