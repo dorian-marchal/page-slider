@@ -171,7 +171,7 @@
         /**
          * Use this function directly if you want to control the sliding direction outside PageSlider
          * @param  {$} $newPage The new page to slide in
-         * @param  {String} from Origin of the slide ('left', 'right', or null)
+         * @param  {String} origin Origin of the slide ('left', 'right', or null)
          * @param  {function} options
          *  beforeTransition: Called before the transition, after the page is added
          *                    to the DOM.
@@ -181,7 +181,7 @@
          *                    in the very first page.
          *
          */
-        this.slidePageFrom = function ($newPage, from, options) {
+        this.slidePageFrom = function ($newPage, origin, options) {
 
             options = options || {};
             options.beforeTransition = options.beforeTransition || $.noop;
@@ -197,7 +197,7 @@
             options.beforeTransition();
 
             // First loaded page (no old page) or no transition
-            if (isFirstPageSlide || !from || !this.transitionsEnabled) {
+            if (isFirstPageSlide || !origin || !this.transitionsEnabled) {
 
                 // Disable transition
                 _disableTransitionOnPages($newPage);
@@ -215,7 +215,7 @@
             }
 
             // Position the page at the starting position of the animation
-            _setPagePosition($newPage, from);
+            _setPagePosition($newPage, origin);
 
             // Shim transitionend if it's not fired
             var shimTransitionEnd = setTimeout(function() {
@@ -238,7 +238,7 @@
 
             setTimeout(function () {
                 _setPagePosition($newPage, 'center');
-                _setPagePosition($oldPage,  (from === 'left' ? 'right' : 'left'));
+                _setPagePosition($oldPage,  (origin === 'left' ? 'right' : 'left'));
                 $currentPage = $newPage;
             }, 0);
 
