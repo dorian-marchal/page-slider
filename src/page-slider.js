@@ -37,7 +37,7 @@
         /**
          * Set a page position via translate3d
          * @param {jquery} $page Page that we want to Position
-         * @param {String} newLocation New position ('left', 'right' or 'center' (default))
+         * @param {String} newLocation New position ('left', 'right' or null (default))
          */
         var _setPagePosition = function ($page, newLocation) {
 
@@ -125,19 +125,19 @@
         };
 
         /**
-         * Return the type of slide ('first', 'forward' or 'back')
+         * Return the type of slide (null, 'left' or 'right')
          */
-        this.getNextSlideBehaviour = function () {
+        this.getNextSlideOrigin = function () {
             var historyLength = stateHistory.length;
 
             if (historyLength === 0) {
-                return 'first';
+                return null;
             }
             else if (location.hash === stateHistory[historyLength - 2]) {
-                return 'back';
+                return 'left';
             }
             else {
-                return 'forward';
+                return 'right';
             }
         };
 
@@ -150,20 +150,20 @@
 
             var state = location.hash;
 
-            var slideBehaviour = this.getNextSlideBehaviour();
+            var slideBehaviour = this.getNextSlideOrigin();
 
             switch (slideBehaviour) {
-                case 'first':
-                    stateHistory.push(state);
-                    this.slidePageFrom($newPage, null, options);
-                    break;
-                case 'back':
+                case 'left':
                     stateHistory.pop();
                     this.slidePageFrom($newPage, 'left', options);
                     break;
-                case 'forward':
+                case 'right':
                     stateHistory.push(state);
                     this.slidePageFrom($newPage, 'right', options);
+                    break;
+                default:
+                    stateHistory.push(state);
+                    this.slidePageFrom($newPage, null, options);
                     break;
             }
         };
