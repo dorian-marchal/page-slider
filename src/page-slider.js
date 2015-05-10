@@ -28,7 +28,11 @@
         var stateHistory = [];
 
         // The container need specific style
-        $container.addClass('page-slider-container');
+        $container.css({
+            height: '100%',
+            width: '100%',
+            overflow: 'hidden',
+        });
 
         /**
          * Set a page position via translate3d
@@ -97,6 +101,13 @@
                 'webkitTransitionDuration': '0s',
                 'transitionDuration': '0s',
             });
+        };
+
+        /**
+         * Set transition duration in milliseconds
+         */
+        this.setTransitionDurationMs = function (durationMs) {
+            this.transitionDurationMs = durationMs;
         };
 
         /**
