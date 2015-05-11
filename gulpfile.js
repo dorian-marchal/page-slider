@@ -6,6 +6,9 @@ var plumber = require('gulp-plumber');
 var compass = require('gulp-compass');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var notify = require('gulp-notify');
+var jasmine = require('gulp-jasmine');
+var debug = require('gulp-debug');
 var tinylr;
 
 var webrootPath = '.';
@@ -76,6 +79,22 @@ gulp.task('uglify', function () {
 gulp.task('live-uglify', function () {
     gulp.watch(jsWatch, ['uglify']);
 });
+
+// Jasmine
+var specWatch = './test/*spec.js';
+gulp.task('test', function () {
+    gulp.src(specWatch)
+        .pipe(jasmine())
+        .on('error', notify.onError({
+            title: 'Jasmine Test Failed',
+            message: 'One or more tests failed, see the cli for details.',
+        }));
+});
+
+gulp.task('live-test', function () {
+    gulp.watch(specWatch, ['test']);
+});
+
 
 
 })();
