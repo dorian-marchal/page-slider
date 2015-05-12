@@ -38,8 +38,7 @@ function notifyLiveReload(event) {
 
 gulp.task('default', ['live']);
 
-gulp.task('live', ['live-compass', 'live-uglify', 'live-reload']);
-
+gulp.task('live', ['live-compass', 'live-uglify', 'live-reload', 'live-test']);
 
 // Live reload
 gulp.task('live-reload', function () {
@@ -71,6 +70,7 @@ gulp.task('compass', function () {
 // Uglify
 gulp.task('uglify', function () {
     return gulp.src(jsWatch)
+        .pipe(plumber())
         .pipe(uglify())
         .pipe(rename('page-slider.min.js'))
         .pipe(gulp.dest(distPath));
@@ -83,7 +83,7 @@ gulp.task('live-uglify', function () {
 // Jasmine
 var specWatch = './test/*spec.js';
 gulp.task('test', function () {
-    gulp.src(specWatch)
+    gulp.src([specWatch, jsWatch])
         .pipe(jasmine())
         .on('error', notify.onError({
             title: 'Jasmine Test Failed',
@@ -92,7 +92,7 @@ gulp.task('test', function () {
 });
 
 gulp.task('live-test', function () {
-    gulp.watch(specWatch, ['test']);
+    gulp.watch([specWatch, jsWatch], ['test']);
 });
 
 
