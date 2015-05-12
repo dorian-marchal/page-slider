@@ -5,6 +5,7 @@ var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 var compass = require('gulp-compass');
 var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
 var rename = require('gulp-rename');
 var notify = require('gulp-notify');
 var notifier = require('node-notifier');
@@ -72,7 +73,9 @@ gulp.task('compass', function () {
 gulp.task('uglify', function () {
     return gulp.src(jsWatch)
         .pipe(plumber())
+        .pipe(sourcemaps.init())
         .pipe(uglify())
+        .pipe(sourcemaps.write())
         .pipe(rename('page-slider.min.js'))
         .pipe(gulp.dest(distPath));
 });
