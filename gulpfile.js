@@ -7,6 +7,7 @@ var compass = require('gulp-compass');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var notify = require('gulp-notify');
+var notifier = require('node-notifier');
 var jasmine = require('gulp-jasmine');
 var debug = require('gulp-debug');
 var tinylr;
@@ -52,12 +53,12 @@ gulp.task('live-reload', function () {
 
 // Compass
 gulp.task('live-compass', function () {
-    gulp.watch(sassWatch, ['compass']);
+    return gulp.watch(sassWatch, ['compass']);
 });
 
 gulp.task('compass', function () {
 
-    gulp.src(sassWatch)
+    return gulp.src(sassWatch)
         .pipe(plumber())
         .pipe(compass({
             config_file: sassPath + '/config.rb',
@@ -77,22 +78,38 @@ gulp.task('uglify', function () {
 });
 
 gulp.task('live-uglify', function () {
-    gulp.watch(jsWatch, ['uglify']);
+    return gulp.watch(jsWatch, ['uglify']);
 });
 
 // Jasmine
 var specWatch = './test/*spec.js';
 gulp.task('test', function () {
-    gulp.src([specWatch, jsWatch])
+
+    var error = false;
+
+    return gulp.src([specWatch, jsWatch])
+        .pipe(plumber())
         .pipe(jasmine())
-        .on('error', notify.onError({
-            title: 'Jasmine Test Failed',
-            message: 'One or more tests failed, see the cli for details.',
-        }));
+        .on('error', notify.onError(function () {
+            error = true;
+            return {
+                title: 'Jasmine Test Failed',
+                message: 'One or more tests failed, see the cli for details.',
+            };
+        }))
+        .on('end', function () {
+            if (!error) {
+                notifier.notify({
+                    title: 'Jasmine Test Success',
+                    message: 'Every tests passed :)',
+                });
+            }
+        })
+    ;
 });
 
 gulp.task('live-test', function () {
-    gulp.watch([specWatch, jsWatch], ['test']);
+    return gulp.watch([specWatch, jsWatch], ['test']);
 });
 
 

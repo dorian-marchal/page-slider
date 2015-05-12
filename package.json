@@ -4,7 +4,9 @@
   "description": "A little library to add CSS transitions between pages in a mobile web app.",
   "main": "lib/page-slider.min.js",
   "dependencies": {
-    "jquery": "2.1.x"
+    "gulp-notify": "^2.2.0",
+    "jquery": "2.1.x",
+    "node-notifier": "^4.2.1"
   },
   "devDependencies": {
     "connect": "^3.3.5",
