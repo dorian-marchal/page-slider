@@ -5,6 +5,7 @@ var connect = require('connect');
 describe('PageSlider', function () {
     var $;
     var staticServer;
+    var slider;
 
     beforeAll(function (done) {
         // Start a local server for lib files
@@ -14,6 +15,7 @@ describe('PageSlider', function () {
     });
 
     beforeEach(function (done) {
+        // Create the DOM env
         jsdom.env({
             html: '<html><body></body></html>',
             scripts: [
@@ -24,18 +26,18 @@ describe('PageSlider', function () {
                 if (err) console.log(err);
                 $ = window.jQuery;
                 PageSlider = window.PageSlider;
+
+                slider = new PageSlider($('body'));
                 done();
             }
         });
     });
 
     it('should add inline style to the container', function () {
-        var $container = $('body');
-        var slider = new PageSlider($container);
 
-        expect($container.css('height')).toEqual('100%');
-        expect($container.css('width')).toEqual('100%');
-        expect($container.css('overflow')).toEqual('hidden');
+        expect(slider.$container.css('height')).toEqual('100%');
+        expect(slider.$container.css('width')).toEqual('100%');
+        expect(slider.$container.css('overflow')).toEqual('hidden');
     });
 
     afterAll(function (done) {

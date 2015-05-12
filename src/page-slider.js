@@ -21,6 +21,7 @@
 
     return function PageSlider($container) {
 
+        this.$container = $container;
         this.transitionsEnabled = true;
         this.transitionDurationMs = 300;
 
