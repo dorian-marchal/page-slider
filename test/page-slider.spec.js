@@ -33,11 +33,42 @@ describe('PageSlider', function () {
         });
     });
 
-    it('should add inline style to the container', function () {
+    describe('once instantiated', function() {
+        it('should add inline style to the container', function () {
 
-        expect(slider.$container.css('height')).toEqual('100%');
-        expect(slider.$container.css('width')).toEqual('100%');
-        expect(slider.$container.css('overflow')).toEqual('hidden');
+            expect(slider.$container.css('height')).toEqual('100%');
+            expect(slider.$container.css('width')).toEqual('100%');
+            expect(slider.$container.css('overflow')).toEqual('hidden');
+        });
+    });
+
+    describe('on transitions disabled', function() {
+
+        it('should disable transitions', function () {
+            slider.disableTransitions();
+            expect(slider.transitionsEnabled).toBe(false);
+        });
+
+        it('should call callbacks synchronously', function () {
+            slider.disableTransitions();
+
+            var beforeCalled = false;
+            var afterCalled = false;
+
+            // slide in a first page
+            slider.slidePage($('<div>'));
+
+            slider.slidePageFrom($('<div>'), 'left', {
+                beforeTransition: function () {
+                    beforeCalled = true;
+                },
+                afterTransition: function () {
+                    afterCalled = true;
+                },
+            });
+
+            expect(beforeCalled && afterCalled).toBe(true);
+        });
     });
 
     afterAll(function (done) {
