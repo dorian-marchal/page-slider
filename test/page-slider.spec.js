@@ -42,9 +42,28 @@ describe('PageSlider', function () {
         });
     });
 
-    describe('on transitions disabled', function() {
 
-        it('should disable transitions', function () {
+    describe('when the first page is slided in', function() {
+        it('should call callbacks synchronously', function () {
+
+            var beforeCalled = false;
+            var afterCalled = false;
+
+            slider.slidePageFrom($('<div>'), 'left', {
+                beforeTransition: function () {
+                    beforeCalled = true;
+                },
+                afterTransition: function () {
+                    afterCalled = true;
+                },
+            });
+
+            expect(beforeCalled && afterCalled).toBe(true);
+        });
+    });
+
+    describe('when transitions are disabled', function() {
+        it('should have disabled transitions', function () {
             slider.disableTransitions();
             expect(slider.transitionsEnabled).toBe(false);
         });
