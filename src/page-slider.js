@@ -1,6 +1,6 @@
 /**
  * Helper to slide a new page in the app.
- * This helper only works well if the container is at 100% height.
+ * This helper only works well if the container is at 100% height/width and overflow hidden.
  *
  * Based on : https://github.com/ccoenraets/directory-backbone-topcoat-require
  *
