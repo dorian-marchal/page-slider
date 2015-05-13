@@ -63,14 +63,17 @@ describe('PageSlider', function () {
     });
 
     describe('when transitions are disabled', function() {
-        it('should have disabled transitions', function () {
+
+        beforeEach(function (done) {
             slider.disableTransitions();
+            done();
+        });
+
+        it('should have disabled transitions', function () {
             expect(slider.transitionsEnabled).toBe(false);
         });
 
         it('should call callbacks synchronously', function () {
-            slider.disableTransitions();
-
             var beforeCalled = false;
             var afterCalled = false;
 
