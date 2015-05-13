@@ -7,11 +7,10 @@ describe('PageSlider', function () {
     var staticServer;
     var slider;
 
-    beforeAll(function (done) {
+    beforeAll(function () {
         // Start a local server for lib files
         var serveStatic = require('serve-static');
         staticServer = connect().use(serveStatic(__dirname + '/..')).listen(4242);
-        done();
     });
 
     beforeEach(function (done) {
@@ -42,7 +41,6 @@ describe('PageSlider', function () {
         });
     });
 
-
     describe('when the first page is slided in', function() {
         it('should call callbacks synchronously', function () {
 
@@ -62,11 +60,74 @@ describe('PageSlider', function () {
         });
     });
 
+    describe('on page slide (except the first one)', function () {
+
+        beforeEach(function () {
+            // Force the first page slide
+            slider.slidePage($('<div>'));
+        });
+
+        it('should call both callbacks', function (done) {
+
+            var beforeCalled = false;
+
+            slider.slidePage($('<div>'), {
+                beforeTransition: function () {
+                    beforeCalled = true;
+                },
+                afterTransition: function () {
+                    expect(beforeCalled).toBe(true);
+                    done();
+                },
+            });
+        });
+
+        describe('when transition duration is modified', function() {
+
+            beforeEach(function () {
+                slider.setTransitionDurationMs(100);
+            });
+
+            it('should have modified transition duration', function () {
+                expect(slider.transitionDurationMs).toBe(100);
+            });
+
+            it('should have transitions that reflect their duration', function (done) {
+
+                var time100ms;
+                var time300ms;
+                var startTime = (new Date()).getTime();
+
+                slider.slidePageFrom($('<div>'), 'left', {
+                    afterTransition: function () {
+
+                        time100ms = (new Date()).getTime() - startTime;
+
+                        slider.setTransitionDurationMs(300);
+
+                        startTime = (new Date()).getTime();
+
+                        slider.slidePageFrom($('<div>'), 'left', {
+                            afterTransition: function () {
+                                time300ms = (new Date()).getTime() - startTime;
+                                console.log(time100ms);
+                                console.log(time300ms);
+                                expect(time300ms).toBeGreaterThan(time100ms);
+                                done();
+                            },
+                        });
+                    },
+                });
+
+            });
+        });
+
+    });
+
     describe('when transitions are disabled', function() {
 
-        beforeEach(function (done) {
+        beforeEach(function () {
             slider.disableTransitions();
-            done();
         });
 
         it('should have disabled transitions', function () {
@@ -93,8 +154,8 @@ describe('PageSlider', function () {
         });
     });
 
-    afterAll(function (done) {
+
+    afterAll(function () {
         staticServer.close();
-        done();
     });
 });
