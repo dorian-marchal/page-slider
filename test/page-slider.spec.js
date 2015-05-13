@@ -33,15 +33,20 @@ describe('PageSlider', function () {
     });
 
     describe('once instantiated', function() {
-        it('should add inline style to the container', function () {
 
+        it('should add inline style to the container', function () {
             expect(slider.$container.css('height')).toEqual('100%');
             expect(slider.$container.css('width')).toEqual('100%');
             expect(slider.$container.css('overflow')).toEqual('hidden');
         });
+
+        it('should have a default transition duration of 300ms', function () {
+            expect(slider.transitionDurationMs).toEqual(300);
+        });
     });
 
     describe('when the first page is slided in', function() {
+
         it('should call callbacks synchronously', function () {
 
             var beforeCalled = false;
@@ -64,12 +69,17 @@ describe('PageSlider', function () {
 
         beforeEach(function () {
             // Force the first page slide
+            var defaultTransitionDuration = slider.transitionDurationMs;
+            slider.setTransitionDurationMs(0);
             slider.slidePage($('<div>'));
+            slider.setTransitionDurationMs(defaultTransitionDuration);
         });
 
         it('should call both callbacks', function (done) {
 
             var beforeCalled = false;
+            // Reduce transition duration
+            slider.setTransitionDurationMs(50);
 
             slider.slidePage($('<div>'), {
                 beforeTransition: function () {
@@ -85,17 +95,17 @@ describe('PageSlider', function () {
         describe('when transition duration is modified', function() {
 
             beforeEach(function () {
-                slider.setTransitionDurationMs(100);
+                slider.setTransitionDurationMs(50);
             });
 
             it('should have modified transition duration', function () {
-                expect(slider.transitionDurationMs).toBe(100);
+                expect(slider.transitionDurationMs).toBe(50);
             });
 
             it('should have transitions that reflect their duration', function (done) {
 
-                var time100ms;
-                var time300ms;
+                var time50ms;
+                var time200ms;
                 var startTime = (new Date()).getTime();
 
                 slider.slidePageFrom($('<div>'), 'left', {
@@ -103,7 +113,7 @@ describe('PageSlider', function () {
 
                         time100ms = (new Date()).getTime() - startTime;
 
-                        slider.setTransitionDurationMs(300);
+                        slider.setTransitionDurationMs(200);
 
                         startTime = (new Date()).getTime();
 
@@ -120,36 +130,36 @@ describe('PageSlider', function () {
             });
         });
 
-    });
+        describe('when transitions are disabled', function() {
 
-    describe('when transitions are disabled', function() {
-
-        beforeEach(function () {
-            slider.disableTransitions();
-        });
-
-        it('should have disabled transitions', function () {
-            expect(slider.transitionsEnabled).toBe(false);
-        });
-
-        it('should call callbacks synchronously', function () {
-            var beforeCalled = false;
-            var afterCalled = false;
-
-            // slide in a first page
-            slider.slidePage($('<div>'));
-
-            slider.slidePageFrom($('<div>'), 'left', {
-                beforeTransition: function () {
-                    beforeCalled = true;
-                },
-                afterTransition: function () {
-                    afterCalled = true;
-                },
+            beforeEach(function () {
+                slider.disableTransitions();
             });
 
-            expect(beforeCalled && afterCalled).toBe(true);
+            it('should have disabled transitions', function () {
+                expect(slider.transitionsEnabled).toBe(false);
+            });
+
+            it('should call callbacks synchronously', function () {
+                var beforeCalled = false;
+                var afterCalled = false;
+
+                // slide in a first page
+                slider.slidePage($('<div>'));
+
+                slider.slidePageFrom($('<div>'), 'left', {
+                    beforeTransition: function () {
+                        beforeCalled = true;
+                    },
+                    afterTransition: function () {
+                        afterCalled = true;
+                    },
+                });
+
+                expect(beforeCalled && afterCalled).toBe(true);
+            });
         });
+
     });
 
 
