@@ -110,8 +110,6 @@ describe('PageSlider', function () {
                         slider.slidePageFrom($('<div>'), 'left', {
                             afterTransition: function () {
                                 time300ms = (new Date()).getTime() - startTime;
-                                console.log(time100ms);
-                                console.log(time300ms);
                                 expect(time300ms).toBeGreaterThan(time100ms);
                                 done();
                             },
