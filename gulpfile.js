@@ -92,7 +92,9 @@ gulp.task('test', function () {
 
     return gulp.src([specWatch, jsWatch])
         .pipe(plumber())
-        .pipe(jasmine())
+        .pipe(jasmine({
+            verbose: true,
+        }))
         .on('error', notify.onError(function () {
             error = true;
             return {
