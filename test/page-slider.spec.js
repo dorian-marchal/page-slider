@@ -19,7 +19,7 @@ describe('PageSlider,', function () {
         jsdom.env({
             html: '<html><body></body></html>',
             scripts: [
-                'http://localhost:4242/bower_components/jquery/dist/jquery.min.js',
+                'http://localhost:4242/node_modules/jquery/dist/jquery.min.js',
                 'http://localhost:4242/lib/page-slider.min.js',
             ],
             done: function (err, window) {
