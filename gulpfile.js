@@ -5,7 +5,12 @@ var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 var compass = require('gulp-compass');
 var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
 var rename = require('gulp-rename');
+var notify = require('gulp-notify');
+var notifier = require('node-notifier');
+var jasmine = require('gulp-jasmine');
+var debug = require('gulp-debug');
 var tinylr;
 
 var webrootPath = '.';
@@ -35,8 +40,7 @@ function notifyLiveReload(event) {
 
 gulp.task('default', ['live']);
 
-gulp.task('live', ['live-compass', 'live-uglify', 'live-reload']);
-
+gulp.task('live', ['live-compass', 'live-uglify', 'live-reload', 'live-test']);
 
 // Live reload
 gulp.task('live-reload', function () {
@@ -50,12 +54,12 @@ gulp.task('live-reload', function () {
 
 // Compass
 gulp.task('live-compass', function () {
-    gulp.watch(sassWatch, ['compass']);
+    return gulp.watch(sassWatch, ['compass']);
 });
 
 gulp.task('compass', function () {
 
-    gulp.src(sassWatch)
+    return gulp.src(sassWatch)
         .pipe(plumber())
         .pipe(compass({
             config_file: sassPath + '/config.rb',
@@ -68,14 +72,51 @@ gulp.task('compass', function () {
 // Uglify
 gulp.task('uglify', function () {
     return gulp.src(jsWatch)
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
         .pipe(uglify())
+        .pipe(sourcemaps.write())
         .pipe(rename('page-slider.min.js'))
         .pipe(gulp.dest(distPath));
 });
 
 gulp.task('live-uglify', function () {
-    gulp.watch(jsWatch, ['uglify']);
+    return gulp.watch(jsWatch, ['uglify']);
 });
+
+// Jasmine
+var specWatch = './test/*spec.js';
+gulp.task('test', function () {
+
+    var error = false;
+
+    return gulp.src([specWatch, distPath + '/*.js'])
+        .pipe(plumber())
+        .pipe(jasmine({
+            verbose: true,
+        }))
+        .on('error', notify.onError(function () {
+            error = true;
+            return {
+                title: 'Jasmine Test Failed',
+                message: 'One or more tests failed, see the cli for details.',
+            };
+        }))
+        .on('end', function () {
+            if (!error) {
+                notifier.notify({
+                    title: 'Jasmine Test Success',
+                    message: 'Every tests passed :)',
+                });
+            }
+        })
+    ;
+});
+
+gulp.task('live-test', function () {
+    return gulp.watch([specWatch, distPath + '/*.js'], ['test']);
+});
+
 
 
 })();

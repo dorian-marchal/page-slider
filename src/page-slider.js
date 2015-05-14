@@ -1,6 +1,6 @@
 /**
  * Helper to slide a new page in the app.
- * This helper only works well if the container is at 100% height.
+ * This helper only works well if the container is at 100% height/width and overflow hidden.
  *
  * Based on : https://github.com/ccoenraets/directory-backbone-topcoat-require
  *
@@ -19,13 +19,9 @@
  }(this, function ($) {
     'use strict';
 
-    return function PageSlider($container) {
+    var PageSlider = function ($container) {
 
-        this.transitionsEnabled = true;
-        this.transitionDurationMs = 300;
-
-        var $currentPage;
-        var stateHistory = [];
+        this.$container = $container;
 
         // The container need specific style
         $container.css({
@@ -33,13 +29,24 @@
             width: '100%',
             overflow: 'hidden',
         });
+    };
+
+    PageSlider.prototype = {
+
+        constructor: PageSlider,
+
+        $container: null,
+        transitionsEnabled: true,
+        transitionDurationMs: 300,
+        stateHistory: [],
+        $currentPage: null,
 
         /**
          * Set a page position via translate3d
          * @param {jquery} $page Page that we want to Position
          * @param {String} newLocation New position ('left', 'right' or null (default))
          */
-        var _setPagePosition = function ($page, newLocation) {
+        _setPagePosition: function ($page, newLocation) {
 
             var newPosition = '0px';
 
@@ -58,9 +65,9 @@
                 'webkitTransform': transform,
                 'transform': transform,
             });
-        };
+        },
 
-        var _jQueryArrayToCollection = function (jqueryArray) {
+        _jQueryArrayToCollection: function (jqueryArray) {
 
             if (jqueryArray instanceof $) {
                 return jqueryArray;
@@ -73,27 +80,27 @@
             });
 
             return $collection;
-        };
+        },
 
         /**
          * Enable css transition on the given page.
          */
-        var _enableTransitionOnPages = function ($pages) {
+        _enableTransitionOnPages: function ($pages) {
 
-            $pages = _jQueryArrayToCollection($pages);
+            $pages = this._jQueryArrayToCollection($pages);
 
             $pages.css({
                 'webkitTransitionDuration': this.transitionDurationMs + 'ms',
                 'transitionDuration': this.transitionDurationMs + 'ms',
             });
-        };
+        },
 
         /**
          * Disable css transition on the given page.
          */
-        var _disableTransitionOnPages = function ($pages) {
+        _disableTransitionOnPages: function ($pages) {
 
-            $pages = _jQueryArrayToCollection($pages);
+            $pages = this._jQueryArrayToCollection($pages);
 
             $pages.css({
                 'webkitTransform': 'none',
@@ -101,52 +108,56 @@
                 'webkitTransitionDuration': '0s',
                 'transitionDuration': '0s',
             });
-        };
+        },
 
         /**
          * Set transition duration in milliseconds
          */
-        this.setTransitionDurationMs = function (durationMs) {
+        setTransitionDurationMs: function (durationMs) {
             this.transitionDurationMs = durationMs;
-        };
+        },
 
         /**
          * Disable css transition on page
          */
-        this.disableTransitions = function () {
+        disableTransitions: function () {
             this.transitionsEnabled = false;
-        };
+        },
 
         /**
          * Enable css transition on page
          */
-        this.enableTransitions = function () {
+        enableTransitions: function () {
             this.transitionsEnabled = true;
-        };
+        },
 
-        /**
-         * Return the type of slide (null, 'left' or 'right')
-         */
-        this.getNextSlideOrigin = function () {
-            var historyLength = stateHistory.length;
+        getSlideOriginForLocation: function (hash) {
+            var historyLength = this.stateHistory.length;
 
             if (historyLength === 0) {
                 return null;
             }
-            else if (location.hash === stateHistory[historyLength - 2]) {
+            else if (hash === this.stateHistory[historyLength - 2]) {
                 return 'left';
             }
             else {
                 return 'right';
             }
-        };
+        },
+
+        /**
+         * Return the type of slide (null, 'left' or 'right')
+         */
+        getNextSlideOrigin: function () {
+            return this.getSlideOriginForLocation(location.hash);
+        },
 
         /**
          * Use this function if you want PageSlider to automatically determine
          * the sliding direction based on the state history.
          * afterTransition function is called when the transition ends
          */
-        this.slidePage = function ($newPage, options) {
+        slidePage: function ($newPage, options) {
 
             var state = location.hash;
 
@@ -154,19 +165,19 @@
 
             switch (slideBehaviour) {
                 case 'left':
-                    stateHistory.pop();
+                    this.stateHistory.pop();
                     this.slidePageFrom($newPage, 'left', options);
                     break;
                 case 'right':
-                    stateHistory.push(state);
+                    this.stateHistory.push(state);
                     this.slidePageFrom($newPage, 'right', options);
                     break;
                 default:
-                    stateHistory.push(state);
+                    this.stateHistory.push(state);
                     this.slidePageFrom($newPage, null, options);
                     break;
             }
-        };
+        },
 
         /**
          * Use this function directly if you want to control the sliding direction outside PageSlider
@@ -181,18 +192,19 @@
          *                    in the very first page.
          *
          */
-        this.slidePageFrom = function ($newPage, origin, options) {
+        slidePageFrom: function ($newPage, origin, options) {
+
+            var that = this;
 
             options = options || {};
             options.beforeTransition = options.beforeTransition || $.noop;
             options.afterTransition = options.afterTransition || $.noop;
 
-            // Current page must be removed after the transition
-            var $oldPage = $currentPage;
+            var $oldPage = this.$currentPage;
             var isFirstPageSlide = !$oldPage;
 
             $newPage.addClass('page');
-            $container.append($newPage);
+            this.$container.append($newPage);
 
             options.beforeTransition();
 
@@ -200,14 +212,14 @@
             if (isFirstPageSlide || !origin || !this.transitionsEnabled) {
 
                 // Disable transition
-                _disableTransitionOnPages($newPage);
+                this._disableTransitionOnPages($newPage);
 
                 // Remove old page if it exists
                 if ($oldPage) {
                     $oldPage.remove();
                 }
 
-                $currentPage = $newPage;
+                this.$currentPage = $newPage;
 
                 // We call the transition end callback anyway
                 options.afterTransition(isFirstPageSlide);
@@ -215,43 +227,43 @@
             }
 
             // Position the page at the starting position of the animation
-            _setPagePosition($newPage, origin);
+            this._setPagePosition($newPage, origin);
 
             // Shim transitionend if it's not fired
             var shimTransitionEnd = setTimeout(function() {
                 onTransitionEnd();
             }, this.transitionDurationMs + 100);
 
-            $currentPage.one('transitionend webkitTransitionEnd', function () {
+            this.$currentPage.one('transitionend webkitTransitionEnd', function () {
                 onTransitionEnd();
             });
 
             // Position the new page and the current page at the ending position of their animation
             // And enable their animation via transition
 
-            _enableTransitionOnPages.call(this, [$newPage, $oldPage]);
+            this._enableTransitionOnPages([$newPage, $oldPage]);
 
             // Force reflow. More information here:
             // http://www.phpied.com/rendering-repaint-reflowrelayout-restyle/
             /*jshint -W030*/
-            $container[0].offsetWidth;
+            this.$container[0].offsetWidth;
 
-            setTimeout(function () {
-                _setPagePosition($newPage, 'center');
-                _setPagePosition($oldPage,  (origin === 'left' ? 'right' : 'left'));
-                $currentPage = $newPage;
-            }, 0);
+            this._setPagePosition($newPage, 'center');
+            this._setPagePosition($oldPage,  (origin === 'left' ? 'right' : 'left'));
+            this.$currentPage = $newPage;
 
             var onTransitionEnd = function () {
-                _disableTransitionOnPages($currentPage);
+                that._disableTransitionOnPages(that.$currentPage);
 
-                $container.find('> .page:not(:last)').remove();
+                that.$container.find('> .page:not(:last)').remove();
 
                 clearTimeout(shimTransitionEnd);
                 options.afterTransition(false);
             };
 
-        };
-
+        },
     };
+
+    return PageSlider;
+
 }));
