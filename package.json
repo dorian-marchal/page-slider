@@ -1,6 +1,6 @@
 {
   "name": "page-slider",
-  "version": "0.3.5",
+  "version": "0.3.7",
   "description": "A little library to add CSS transitions between pages in a mobile web app.",
   "main": "lib/page-slider.min.js",
   "dependencies": {
