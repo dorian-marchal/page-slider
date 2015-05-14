@@ -200,7 +200,6 @@
             options.beforeTransition = options.beforeTransition || $.noop;
             options.afterTransition = options.afterTransition || $.noop;
 
-            // Current page must be removed after the transition
             var $oldPage = this.$currentPage;
             var isFirstPageSlide = !$oldPage;
 
@@ -249,11 +248,9 @@
             /*jshint -W030*/
             this.$container[0].offsetWidth;
 
-            setTimeout(function () {
-                that._setPagePosition($newPage, 'center');
-                that._setPagePosition($oldPage,  (origin === 'left' ? 'right' : 'left'));
-                that.$currentPage = $newPage;
-            }, 0);
+            this._setPagePosition($newPage, 'center');
+            this._setPagePosition($oldPage,  (origin === 'left' ? 'right' : 'left'));
+            this.$currentPage = $newPage;
 
             var onTransitionEnd = function () {
                 that._disableTransitionOnPages(that.$currentPage);

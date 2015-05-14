@@ -28,6 +28,7 @@ describe('PageSlider,', function () {
                 $ = window.jQuery;
                 PageSlider = window.PageSlider;
                 location = window.location;
+                document = window.document;
 
                 slider = new PageSlider($('body'));
                 done();
@@ -101,6 +102,32 @@ describe('PageSlider,', function () {
             });
         });
 
+        it('should replace the old page with the new one', function (done) {
+            // Reduce transition duration
+            slider.setTransitionDurationMs(50);
+            var $firstPage = $('<div>', { id: 'first-page' });
+            var $secondPage = $('<div>', { id: 'second-page' });
+
+            var domContains = function ($el) {
+                return $.contains(document.documentElement, $el.get(0));
+            };
+
+            slider.slidePage($firstPage, {
+                afterTransition: function () {
+                    expect( domContains($firstPage) ).toBe(true);
+                    expect( domContains($secondPage) ).toBe(false);
+
+                    slider.slidePage($secondPage, {
+                        afterTransition: function () {
+                            expect( domContains($firstPage) ).toBe(false);
+                            expect( domContains($secondPage) ).toBe(true);
+                            done();
+                        },
+                    });
+                },
+            });
+        });
+
         describe('when the current location is the penultimate history,', function () {
             it('should have a next slide origin equals to "left"', function () {
                 slider.stateHistory[0] = '#test'; // last page
@@ -112,16 +139,12 @@ describe('PageSlider,', function () {
 
         describe('when the current location isn\'t the penultimate history (and the history length is > 0),', function () {
             it('should have a next slide origin equals to "right"', function () {
-                slider.stateHistory[0] = '#test'; // last page
+                slider.stateHistory[0] = '#test';
                 location.hash = '#toast';
                 expect(slider.getNextSlideOrigin()).toEqual('right');
             });
         });
 
-        describe('just after the start of the transition,', function () {
-
-            // it('should')
-        });
 
 
         describe('when transition duration is modified,', function() {
