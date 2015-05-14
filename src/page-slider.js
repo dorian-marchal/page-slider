@@ -131,21 +131,25 @@
             this.transitionsEnabled = true;
         },
 
-        /**
-         * Return the type of slide (null, 'left' or 'right')
-         */
-        getNextSlideOrigin: function () {
+        getSlideOriginForLocation: function (hash) {
             var historyLength = this.stateHistory.length;
 
             if (historyLength === 0) {
                 return null;
             }
-            else if (location.hash === this.stateHistory[historyLength - 2]) {
+            else if (hash === this.stateHistory[historyLength - 2]) {
                 return 'left';
             }
             else {
                 return 'right';
             }
+        },
+
+        /**
+         * Return the type of slide (null, 'left' or 'right')
+         */
+        getNextSlideOrigin: function () {
+            return this.getSlideOriginForLocation(location.hash);
         },
 
         /**

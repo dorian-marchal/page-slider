@@ -2,10 +2,11 @@ var jsdom = require('jsdom');
 var connect = require('connect');
 
 
-describe('PageSlider', function () {
+describe('PageSlider,', function () {
     var $;
     var staticServer;
     var slider;
+    var location;
 
     beforeAll(function () {
         // Start a local server for lib files
@@ -23,8 +24,10 @@ describe('PageSlider', function () {
             ],
             done: function (err, window) {
                 if (err) console.log(err);
+
                 $ = window.jQuery;
                 PageSlider = window.PageSlider;
+                location = window.location;
 
                 slider = new PageSlider($('body'));
                 done();
@@ -32,7 +35,7 @@ describe('PageSlider', function () {
         });
     });
 
-    describe('once instantiated', function() {
+    describe('once instantiated,', function() {
 
         it('should add inline style to the container', function () {
             expect(slider.$container.css('height')).toEqual('100%');
@@ -45,7 +48,13 @@ describe('PageSlider', function () {
         });
     });
 
-    describe('when the first page is slided in', function() {
+    describe('before the first page is slided in,', function () {
+        it('should have a `null` next slide origin', function () {
+            expect(slider.getNextSlideOrigin()).toBeNull();
+        });
+    });
+
+    describe('when the first page is slided in,', function() {
 
         it('should call callbacks synchronously', function () {
 
@@ -65,7 +74,7 @@ describe('PageSlider', function () {
         });
     });
 
-    describe('on page slide (except the first one)', function () {
+    describe('on page slide (except the first one),', function () {
 
         beforeEach(function () {
             // Force the first page slide
@@ -92,7 +101,23 @@ describe('PageSlider', function () {
             });
         });
 
-        describe('when transition duration is modified', function() {
+        describe('when the current location is in the penultimate history,', function () {
+            it('should have a next slide origin equals to "left"', function () {
+                slider.stateHistory[0] = '#test'; // last page
+                slider.stateHistory[1] = '#toast'; // current page
+                location.hash = '#test';
+                expect(slider.getNextSlideOrigin()).toEqual('left');
+
+            });
+        });
+
+        describe('just after the start of the transition,', function () {
+
+            // it('should')
+        });
+
+
+        describe('when transition duration is modified,', function() {
 
             beforeEach(function () {
                 slider.setTransitionDurationMs(50);
@@ -130,7 +155,7 @@ describe('PageSlider', function () {
             });
         });
 
-        describe('when transitions are disabled', function() {
+        describe('when transitions are disabled,', function() {
 
             beforeEach(function () {
                 slider.disableTransitions();
