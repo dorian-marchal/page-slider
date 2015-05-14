@@ -101,13 +101,20 @@ describe('PageSlider,', function () {
             });
         });
 
-        describe('when the current location is in the penultimate history,', function () {
+        describe('when the current location is the penultimate history,', function () {
             it('should have a next slide origin equals to "left"', function () {
                 slider.stateHistory[0] = '#test'; // last page
                 slider.stateHistory[1] = '#toast'; // current page
                 location.hash = '#test';
                 expect(slider.getNextSlideOrigin()).toEqual('left');
+            });
+        });
 
+        describe('when the current location isn\'t the penultimate history (and the history length is > 0),', function () {
+            it('should have a next slide origin equals to "right"', function () {
+                slider.stateHistory[0] = '#test'; // last page
+                location.hash = '#toast';
+                expect(slider.getNextSlideOrigin()).toEqual('right');
             });
         });
 

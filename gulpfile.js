@@ -90,7 +90,7 @@ gulp.task('test', function () {
 
     var error = false;
 
-    return gulp.src([specWatch, jsWatch])
+    return gulp.src([specWatch, distPath + '/*.js'])
         .pipe(plumber())
         .pipe(jasmine({
             verbose: true,
@@ -114,7 +114,7 @@ gulp.task('test', function () {
 });
 
 gulp.task('live-test', function () {
-    return gulp.watch([specWatch, jsWatch], ['test']);
+    return gulp.watch([specWatch, distPath + '/*.js'], ['test']);
 });
 
 
