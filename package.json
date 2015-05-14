@@ -1,6 +1,6 @@
 {
   "name": "page-slider",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "A little library to add CSS transitions between pages in a mobile web app.",
   "main": "lib/page-slider.min.js",
   "dependencies": {
@@ -23,7 +23,7 @@
     "tiny-lr": "~0.1.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
