@@ -23,7 +23,7 @@
     "tiny-lr": "~0.1.5"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "node node_modules/gulp/bin/gulp.js test"
   },
   "repository": {
     "type": "git",
