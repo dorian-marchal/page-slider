@@ -134,7 +134,8 @@
         getSlideOriginForLocation: function (hash) {
             var historyLength = this.stateHistory.length;
 
-            if (historyLength === 0) {
+            // First page and page reload don't get sliding animation
+            if (historyLength === 0 || hash === this.stateHistory[historyLength - 1]) {
                 return null;
             }
             else if (hash === this.stateHistory[historyLength - 2]) {
